@@ -1,5 +1,6 @@
 # Kubernetes labs
 
+[Introduction](https://collabnix.github.io/kubelabs/Kubernetes_Intro_slides-1/Kubernetes_Intro_slides-1.html)
 
 ## Contents
 1. [Pods](Pods101/README.md)

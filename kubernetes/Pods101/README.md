@@ -12,4 +12,11 @@
 
 ## Exercices
 1. Create a pod with image nginx called nginx and expose traffic on port 80. Create second pod and curl index page of nginx pod on port 80.
-1. Create 2 containers in a single pod. First container should write 'hello' every 2s to /var/logs/hello. Second container should output log file contents using command `tail -f /var/logs/hello`
+1. Create 2 containers in a single pod. First container should write 'hello' every 2s to /var/logs/hello.txt file. You can use while loop 
+```
+while true; do
+    echo "hello" >> /var/logs/hello.txt;
+    sleep 2;
+done
+```
+Second container should output log file contents using command `tail -f /var/logs/hello.txt`
