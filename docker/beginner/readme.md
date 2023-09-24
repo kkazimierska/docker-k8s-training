@@ -1,4 +1,4 @@
-## Docker for beginners
+## Getting started with Docker 
 
 This tutorial consists of the following sections:
 

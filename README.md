@@ -3,7 +3,6 @@
 
 ## Docker
 * [Introduction](docker/beginner/readme.md)
-* [Example App](docker/example-voting-app/readme.md)
 * [Networking](docker/networking/README.md)
 * [Security](docker/security/README.md)
 

@@ -5,8 +5,6 @@ This directory contains tutorials on how to take advantage of a non-exhaustive c
 ## Docker
 * [Content Trust](trust/README.md)
 * [Content Trust Basics](trust-basics/README.md)
-* [Secrets Management](secrets/README.md)
-* [Secure Networking Basics](networking/README.md)
 
 ## Linux
 * [Capabilities](capabilities/README.md)
