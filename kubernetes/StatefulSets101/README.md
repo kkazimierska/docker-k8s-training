@@ -4,13 +4,13 @@ A Statefulset is a Kubernetes controller that is used to manage and maintain one
 
 A stateless application is one that does not care which network it is using, and it does not need permanent storage. Examples of stateless apps may include web servers (Apache, Nginx, or Tomcat).
 
-On the other hand, we have stateful apps. Let’s say you have a Solr database cluster that is managed by several Zookeeper instances. For such an application to function correctly, each Solr instance must be aware of the Zookeeper instances that are controlling it. Similarly, the Zookeeper instances themselves establish connections between each other to elect a master node. Due to such a design, Solr clusters are an example of stateful applications. If you deploy Zookeeper on Kubernetes, you’ll need to ensure that pods can reach each other through a unique identity that does not change (hostnames, IPs...etc.). Other examples of stateful applications include MySQL clusters, Redis, Kafka, MongoDB, and others.
+On the other hand, we have stateful apps. For example, you can have a MySQL database with 2 read-only replicas and a master node. You need to ensure that the pods can be reached by the master node through a unique identity that doesn't change (hostnames, IPs...etc). Other examples of stateful Redis include Kafka, MongoDB and others.
 
 Given this difference, Deployment is more suited to work with stateless applications. As far as a Deployment is concerned, Pods are interchangeable. While a StatefulSet keeps a unique identity for each Pod it manages. It uses the same identity whenever it needs to reschedule those Pods.
 
 ## Exposing a StatefulSet
 
-A Kubernetes Service acts as an abstraction layer. In a stateless application like an Nginx web server, the client does not (and should not) care which pod receives a response to the request. The connection reaches the Service, and it routes it to any backend pod. This is not the case in stateful apps. In the above diagram, a Solr pod may need to reach the Zookeeper master, not any pod. For this reason, part of the Statefulset definition entails a Headless Service. A Headless Service does not contain a ClusterIP. Instead, it creates several Endpoints that are used to produce DNS records. Each DNS record is bound to a pod. All of this is done internally by Kubernetes, but it’s good to have an idea about how it does it.
+A Kubernetes Service acts as an abstraction layer. In a stateless application like an Nginx web server, the client does not (and should not) care which pod receives a response to the request. The connection reaches the Service, and it routes it to any backend pod. This is not the case in stateful apps. Part of the Statefulset definition entails a Headless Service. A Headless Service does not contain a ClusterIP. Instead, it creates several Endpoints that are used to produce DNS records. Each DNS record is bound to a pod. All of this is done internally by Kubernetes, but it’s good to have an idea about how it does it.
 
 # Deploying a Stateful Application Using Kubernetes Statefulset
 
@@ -31,32 +31,9 @@ A Persistent Volume Claim is a request to use a Persistent Volume. If we are to 
 
 Under this tutorial, we will see example of NFS server.
 
-
-## Deploying NFS Server
-
-NFS is a protocol that allows nodes to read/write data over a network. The protocol works by having a master node running the NFS daemon and stores the data. This master node makes certain directories available over the network.
-
-Clients access the masters shared via drive mounts. From the viewpoint of applications, they are writing to the local disk. Under the covers, the NFS protocol writes it to the master.
-
-In this scenario, and for demonstration and learning purposes, the role of the NFS Server is handled by a customised container. The container makes directories available via NFS and stores the data inside the container. In production, it is recommended to configure a dedicated NFS Server.
-
-Start the NFS using the command:
-
-```
-docker run -d --net=host \
-   --privileged --name nfs-server \
-   katacoda/contained-nfs-server:centos7 \
-   /exports/data-0001 /exports/data-0002
-```
-
-The NFS server exposes two directories, data-0001 and data-0002. In the next steps, this is used to store data.
-
-
 ## Deploying Persistent Volume
 
-For Kubernetes to understand the available NFS shares, it requires a PersistentVolume configuration. The PersistentVolume supports different protocols for storing data, such as AWS EBS volumes, GCE storage, OpenStack Cinder, Glusterfs and NFS. The configuration provides an abstraction between storage and API allowing for a consistent experience.
-
-In the case of NFS, one PersistentVolume relates to one NFS directory. When a container has finished with the volume, the data can either be Retained for future use or the volume can be Recycled meaning all the data is deleted. The policy is defined by the persistentVolumeReclaimPolicy option.
+For Kubernetes to understand that there is availabe persistent storage, it requires a PersistentVolume configuration. The PersistentVolume supports different protocols for storing data, such as AWS EBS volumes, GCE storage, OpenStack Cinder, Glusterfs and NFS. The configuration provides an abstraction between storage and API allowing for a consistent experience.
 
 Spec File:
 
@@ -64,17 +41,14 @@ Spec File:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: <friendly-name>
+  name: pv0001
 spec:
-  capacity:
-    storage: 1Gi
   accessModes:
     - ReadWriteOnce
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Recycle
-  nfs:
-    server: <server-name>
-    path: <shared-path>
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /data/pv0001/
 ```
 
 The spec defines additional metadata about the persistent volume, including how much space is available and if it has read/write access.
@@ -85,16 +59,13 @@ The spec defines additional metadata about the persistent volume, including how 
 Create two new PersistentVolume definitions to point at the two available NFS shares.
 
 ```
-kubectl create -f nfs-0001.yaml
+kubectl create -f pv.yaml 
 ```
 
+Once created, view all PersistentVolumes in the cluster using 
 ```
-kubectl create -f nfs-0002.yaml
+kubectl get pv
 ```
-
-View the contents of the files using cat nfs-0001.yaml nfs-0002.yaml
-
-Once created, view all PersistentVolumes in the cluster using kubectl get pv
 
 ## Deploying Persistent Volume Claim
 
@@ -112,7 +83,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 3Gi
+      storage: 1Gi
   ```
   
 ## Task
@@ -123,16 +94,11 @@ Create two claims for two different applications. A MySQL Pod will use one claim
 kubectl create -f pvc-mysql.yaml
 ```
 
-```
-kubectl create -f pvc-http.yaml
-```
-
-View the contents of the files using cat pvc-mysql.yaml pvc-http.yaml
 
 Once created, view all PersistentVolumesClaims in the cluster using 
 
 ```
-kubectl get pvc.
+kubectl get pvc
 ```
 
 The claim will output which Volume the claim is mapped to claim.
@@ -161,10 +127,6 @@ When a deployment is defined, it can assign itself to a previous claim. The foll
 kubectl create -f pod-mysql.yaml
 ```
 
-```
-kubectl create -f pod-www.yaml
-```
-
 Use the command below to view the definition of the Pods.
 
 ```
@@ -178,58 +140,3 @@ kubectl get pods
 ```
 
 If a Persistent Volume Claim is not assigned to a Persistent Volume, then the Pod will be in Pending mode until it becomes available. In the next step, we'll read/write data to the volume.
-
-## Read/Write Data
-
-tore all database changes to the NFS Server while the HTTP Server will serve static from the NFS drive. When upgrading, restarting or moving containers to a different machine the data will still be accessible.
-
-To test the HTTP server, write a 'Hello World' index.html homepage. In this scenario, we know the HTTP directory will be based on data-0001 as the volume definition hasn't driven enough space to satisfy the MySQL size requirement.
-
-```
-docker exec -it nfs-server bash -c "echo 'Hello World' > /exports/data-0001/index.html"
-```
-
-Based on the IP of the Pod, when accessing the Pod, it should return the expected response.
-
-```
-ip=$(kubectl get pod www -o yaml |grep podIP | awk '{split($0,a,":"); print a[2]}'); echo $ip
-```
-
-```
-curl $ip
-```
-
-## Update Data
-
-When the data on the NFS share changes, then the Pod will read the newly updated data.
-
-```
-docker exec -it nfs-server bash -c "echo 'Hello NFS World' > /exports/data-0001/index.html"
-```
-
-```
-curl $ip
-```
-
-
-## Recreate Pod
-
-Because a remote NFS server stores the data, if the Pod or the Host were to go down, then the data will still be available.
-
-### Task
-
-Deleting a Pod will cause it to remove claims to any persistent volumes. New Pods can pick up and re-use the NFS share.
-
-```
-kubectl delete pod www
-```
-
-```
-kubectl create -f pod-www2.yaml
-```
-
-```
-ip=$(kubectl get pod www2 -o yaml |grep podIP | awk '{split($0,a,":"); print a[2]}'); curl $ip
-```
-
-The applications now use a remote NFS for their data storage. Depending on requirements, this same approach works with other storage engines such as GlusterFS, AWS EBS, GCE storage or OpenStack Cinder.
