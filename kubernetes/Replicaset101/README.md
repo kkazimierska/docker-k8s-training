@@ -232,5 +232,5 @@ If you run kubectl get rs now you should see that there are no ReplicaSets there
 The only way to get those pods managed by a ReplicaSet again is to create this ReplicaSet with the same selector and pod template as the previous one. If you need a different pod template, you should consider using a Deployment instead, which will handle replacing pods in a controlled way.
 
 # Exercices
-1. Create replicaset using nginx container that have 3 replicas
 1. Add autoscale for replica set with minReplicas=3 and maxReplicas=5, scaling should apply for cpu utilization >=50%.
+2. Add readiness probe for the `nginx_replicaset.yaml` that will run command `curl http://localhost`, every 5s with intial delay of 10s        
