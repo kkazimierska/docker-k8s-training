@@ -1,28 +1,12 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-nginx
-  labels:
-    run: my-nginx
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 80
-    protocol: TCP
-  selector:
-    run: my-nginx
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    run: my-nginx
     app: my-nginx
   name: my-nginx
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: my-nginx
@@ -31,7 +15,6 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        run: my-nginx
         app: my-nginx
     spec:
       containers:

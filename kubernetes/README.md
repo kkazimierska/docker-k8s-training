@@ -2,12 +2,6 @@
 The following labs aim to cover the topics required to achieve CKAD certification, which requires knowledge of the following topics:
 ![ckad_curriculum](images/ckad_curriculum.png)
 
-
-## Introduction
-
-[Introduction slides](https://collabnix.github.io/kubelabs/Kubernetes_Intro_slides-1/Kubernetes_Intro_slides-1.html)
-
-
 ## Exercises
 Each chapter ends with practical exercises for you. There is also a `SOLUTIONS.md` file with the solutions to the exercises, but before you look there, try to do it yourself. 
 
