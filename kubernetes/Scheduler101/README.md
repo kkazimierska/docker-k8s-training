@@ -32,7 +32,7 @@ The scheduler is a kind of controller. There are lots of different controllers a
 ### Do You Have What it Takes To Run This Pod?
 
 - A node may be overloaded with so many busy pods consuming most of its CPU and memory. So, when the scheduler has a Pod to deploy, it determines whether or not the node has the necessary resources.
-- If a Pod deploy to node that doesnot have enough memeory(just an example ) that pod has requesting that hosted appliction might behave unexpectedly or even crash.
+- If a Pod deploy to node that doesnot have enough memory(just an example ) that pod has requesting that hosted appliction might behave unexpectedly or even crash.
 
 ### Are You a Better Candidate For Having This Pod ?
 
