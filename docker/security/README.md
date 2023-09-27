@@ -10,3 +10,8 @@ This directory contains tutorials on how to take advantage of a non-exhaustive c
 * [Capabilities](capabilities/README.md)
 * [Control Groups](cgroups/README.md)
 * [User Namespaces](userns/README.md)
+
+
+One way: Signing the image by the key.
+
+`chown` change ownership

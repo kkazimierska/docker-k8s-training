@@ -18,7 +18,7 @@ hello-world             latest              690ed74de00f        5 months ago    
 
 ### 1.1 Docker Run
 Great! Let's now run a Docker **container** based on this image. To do that you are going to use the `docker run` command.
-
+(namespace isolated from the system; Docker container is isolated from host sytem).
 ```
 $ docker run alpine ls -l
 total 48
@@ -49,6 +49,8 @@ OK, that's some actual output. In this case, the Docker client dutifully ran the
 Try another command.
 ```
 $ docker run alpine /bin/sh
+$ docker run -it alpine /bin/sh
+# ls -al
 ```
 
 Wait, nothing happened! Is that a bug? Well, no. These interactive shells will exit after running any scripted commands, unless they are run in an interactive terminal - so for this example to not exit, you need to `docker run -it alpine /bin/sh`.
@@ -83,6 +85,16 @@ bin      dev      etc      home     lib      linuxrc  media    mnt      proc    
 / # uname -a
 Linux 97916e8cb5dc 4.4.27-moby #1 SMP Wed Oct 26 14:01:48 UTC 2016 x86_64 Linux
 ```
+
+```
+touch test.txt
+```
+(it persist only in the run time of the container- - changes during runtime of the container are not savedexit)
+
+```
+docker ps -a
+```
+
 Running the `run` command with the `-it` flags attaches us to an interactive tty in the container. Now you can run as many commands in the container as you want. Take some time to run your favorite commands.
 
 That concludes a whirlwind tour of the `docker run` command which would most likely be the command you'll use most often. It makes sense to spend some time getting comfortable with it. To find out more about `run`, use `docker run --help` to see a list of all flags it supports. As you proceed further, we'll see a few more variants of `docker run`.

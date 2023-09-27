@@ -13,3 +13,6 @@ This tutorial allows you to dive right in and try code in the [Quick Tutorials](
 1. [Bridge Networking](A2-bridge-networking.md)
 
 Or you can first dive deep into the [Network Concepts](concepts/) before trying in out in code yourself.
+
+
+Bridge is used for connecting the docker containers.

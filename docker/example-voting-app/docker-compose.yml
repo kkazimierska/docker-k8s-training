@@ -1,17 +1,23 @@
 # version is now using "compose spec"
 # v2 and v3 are now combined!
 # docker-compose v1.27+ required
-
+# keyword of Dockercompose
+# ip address can be resolved as servis name
 services:
   vote:
     build: ./vote
     # use python rather than gunicorn for local dev
     command: python app.py
-    depends_on:
-      redis:
-        condition: service_healthy
+    # depends_on:
+      # redis:
+        # condition: service_healthy
     volumes:
      - ./vote:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 15s
+      timeout: 10s
+      start_period: 10s
     ports:
       - "5000:80"
     networks:
@@ -22,9 +28,9 @@ services:
     build: ./result
     # use nodemon rather than node for local dev
     entrypoint: nodemon server.js
-    depends_on:
-      db:
-        condition: service_healthy 
+    # depends_on:
+      # db:
+        # condition: service_healthy
     volumes:
       - ./result:/app
     ports:
@@ -33,25 +39,26 @@ services:
     networks:
       - front-tier
       - back-tier
-
+# name of the service
   worker:
+  # image: worker:1.0 OR - image takes priority over build
     build:
       context: ./worker
-    depends_on:
-      redis:
-        condition: service_healthy 
-      db:
-        condition: service_healthy 
+    # depends_on:
+      # redis:
+        # condition: service_healthy
+      # db:
+        # condition: service_healthy
     networks:
       - back-tier
 
   redis:
     image: redis:alpine
-    volumes:
-      - "./healthchecks:/healthchecks"
-    healthcheck:
-      test: /healthchecks/redis.sh
-      interval: "5s"
+    # volumes:
+    #   - "./healthchecks:/healthchecks"
+    # healthcheck:
+    #   test: /healthchecks/redis.sh
+    #   interval: "5s"
     networks:
       - back-tier
 
@@ -63,9 +70,9 @@ services:
     volumes:
       - "db-data:/var/lib/postgresql/data"
       - "./healthchecks:/healthchecks"
-    healthcheck:
-      test: /healthchecks/postgres.sh
-      interval: "5s"
+    # healthcheck:
+    #   test: /healthchecks/postgres.sh
+    #   interval: "5s"
     networks:
       - back-tier
 

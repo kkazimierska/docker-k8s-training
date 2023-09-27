@@ -1,4 +1,4 @@
-## Getting started with Docker 
+## Getting started with Docker
 
 This tutorial consists of the following sections:
 
@@ -9,3 +9,8 @@ This tutorial consists of the following sections:
 ## More about docker internals
 * https://stackoverflow.com/questions/34820558/difference-between-cgroups-and-namespaces - techonlogy used by docker
 * https://akashrajpurohit.com/blog/build-your-own-docker-with-linux-namespaces-cgroups-and-chroot-handson-guide/ - build your own docker
+
+
+Open from terminal wsl i zlinkuje folder na windowsie ze zmianami w ubuntu.
+
+## Summary one

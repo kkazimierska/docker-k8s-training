@@ -33,3 +33,24 @@ which are also available during the official [CKAD certification](https://docs.l
 - https://github.com/bmuschko/ckad-crash-course - practical exercises, you can find more on Github. Familiarise yourself with them, when you feel confident with the Github exercises, move on to the killercoda.
 
 - https://killercoda.com/killer-shell-ckad - very good resource. You get free access to 2 examas when you register for the CKAD exam. If you pass the exam here, you are ready to take the CKAD, as the Killerconda examas are slightly harder. Suggested at the end of your learning path
+
+**Additional**
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+after
+```
+source <(kubectl completion bash) # set up autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+```
+
+```
+kubectl get deployments.apps
+```
+filled automatically **deployments.apps**
+
+After
+```
+# short alias to set/show context/namespace (only works for bash and bash-compatible shells, current context to be set before using kn to set namespace)
+alias kx='f() { [ "$1" ] && kubectl config use-context $1 || kubectl config current-context ; } ; f'
+alias kn='f() { [ "$1" ] && kubectl config set-context --current --namespace $1 || kubectl config view --minify | grep namespace | cut -d" " -f6 ; } ; f'
+```
+switching the name space context is faster.

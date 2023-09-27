@@ -3,17 +3,23 @@ Great! So you have now looked at `docker run`, played with a Docker container an
 
 ### 2.1 Build a static website image
 Build a docker image to serve a static website
+got to *cd docker/beginner/static-site/*
+*ls -al*
+*-t* giving the name
+*.* runs the dockerfile in that folder
 
 >**Note:** Code for this section is in this repo in the directory `static-site`
 ```bash
 $ docker build -t static-site .
 
 ```
+**docker scout quickview**
 The image that you are going to use is a single-page website that was created in the previous step. You can run the image using `docker run` as follows
 
 ```bash
 $ docker run -d static-site
 ```
+**docker container ls**
 >**Note:** The current version of this image doesn't run without the `-d` flag. The `-d` flag enables **detached mode**, which detaches the running container from the terminal/shell and returns your prompt after the container starts. We are debugging the problem with this image but for now, use `-d` even for this first example.
 
 So, what happens when you run this command?
@@ -42,6 +48,7 @@ Check out the `CONTAINER ID` column. You will need to use this `CONTAINER ID` va
 $ docker stop a7a0e504ca3e
 $ docker rm   a7a0e504ca3e
 ```
+**docker system prune** clean up containers
 
 >**Note:** A cool feature is that you do not need to specify the entire `CONTAINER ID`. You can just specify a few starting characters and if it is unique among all the containers that you have launched, the Docker client will intelligently pick it up.
 
@@ -51,7 +58,9 @@ Now, let's launch a container in **detached** mode as shown below:
 $ docker run --name static-site -e AUTHOR="Your Name" -d -P static-site
 e61d12292d69556eabe2a44c16cbd54486b2527e2ce4f95438e504afb7b02810
 ```
-
+**-P** exposes the container
+**docker containerls**
+**0.0.0.0:32768->80/tcp** redirects to 80 
 In the above command:
 
 *  `-d` will create a container with the process detached from our terminal
@@ -67,6 +76,10 @@ $ docker port static-site
 443/tcp -> 0.0.0.0:32772
 80/tcp -> 0.0.0.0:32773
 ```
+**docker run -d -p 80:80 static-site**
+
+Stop container with id
+**docker stop id**
 
 If you are running [Docker for Mac](https://docs.docker.com/docker-for-mac/), [Docker for Windows](https://docs.docker.com/docker-for-windows/), or Docker on Linux, you can open `http://localhost:[YOUR_PORT_FOR 80/tcp]`. For our example this is `http://localhost:32773`.
 
@@ -108,7 +121,24 @@ $ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 
+docker run -d -e AUTHOR="Piotr" -e TEST="test" -P static-site
+
+docker container ls
+
+docker exec -it 899ef644eb36 /bin/sh
+
+ls
+
+echo $TEST
+
 ### 2.2 Docker Images
+
+by default
+```
+docker build -t static-site:latest
+```
+Check image versions tag.
+
 
 In this section, let's dive deeper into what Docker images are. You will build your own image, use that image to run an application locally.
 
